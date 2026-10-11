@@ -726,10 +726,13 @@ function exportReport(){
   const catH=catLabels.length*(BH*2+BG+4)+10;
   const savRows=s.savingsRows||[],savStartY=catBodyY+catH+10;
   let savSvg='',savH=0;
-  if(savRows.length){
-    savH=savRows.length*24+36;
+    if(savRows.length){
+    const savTotP=savRows.reduce((s,r)=>s+(r.proj||0),0);
+    const savTotA=savRows.reduce((s,r)=>s+(r.act||0),0);
+    savH=savRows.length*24+60;
     savSvg=`<rect y="${savStartY}" width="600" height="22" fill="#e8f0f8"/><text x="24" y="${savStartY+15}" font-size="11" font-weight="bold" fill="#0f2744" font-family="Arial">SAVINGS &amp; INVESTMENT BREAKDOWN</text><text x="300" y="${savStartY+15}" font-size="9" fill="#185fa5" font-family="Arial" text-anchor="end">PROJECTED</text><text x="400" y="${savStartY+15}" font-size="9" fill="#e8716b" font-family="Arial" text-anchor="end">ACTUAL</text>`+
-    savRows.map((r,i)=>{const y=savStartY+24+i*24,tc=r.type==='INVEST'?'#7c3aed':'#1a7a3a';return `<rect x="16" y="${y}" width="570" height="20" rx="4" fill="${i%2===0?'#f0f0ff':'#ffffff'}"/><text x="24" y="${y+14}" font-size="10" fill="${tc}" font-family="Arial">${esc(r.sub)}</text><text x="90" y="${y+14}" font-size="8" fill="${tc}" font-family="Arial">[${esc(r.type)}]</text><text x="300" y="${y+14}" font-size="10" fill="#185fa5" font-family="Arial" text-anchor="end">${fmt(r.proj)}</text><text x="400" y="${y+14}" font-size="10" fill="#e8716b" font-family="Arial" text-anchor="end">${fmt(r.act)}</text>`;}).join('');
+    savRows.map((r,i)=>{const y=savStartY+24+i*24,tc=r.type==='INVEST'?'#7c3aed':'#1a7a3a';return `<rect x="16" y="${y}" width="570" height="20" rx="4" fill="${i%2===0?'#f0f0ff':'#ffffff'}"/><text x="24" y="${y+14}" font-size="10" fill="${tc}" font-family="Arial">${esc(r.sub)}</text><text x="90" y="${y+14}" font-size="8" fill="${tc}" font-family="Arial">[${esc(r.type)}]</text><text x="300" y="${y+14}" font-size="10" fill="#185fa5" font-family="Arial" text-anchor="end">${fmt(r.proj)}</text><text x="400" y="${y+14}" font-size="10" fill="#e8716b" font-family="Arial" text-anchor="end">${fmt(r.act)}</text>`;}).join('')+
+    `<line x1="16" y1="${savStartY+24+savRows.length*24}" x2="586" y2="${savStartY+24+savRows.length*24}" stroke="#dde3ea" stroke-width=".5"/><text x="24" y="${savStartY+24+savRows.length*24+14}" font-size="10" font-weight="bold" fill="#0f2744" font-family="Arial">Total savings &amp; investment</text><text x="300" y="${savStartY+24+savRows.length*24+14}" font-size="10" font-weight="bold" fill="#185fa5" font-family="Arial" text-anchor="end">${fmt(savTotP)}</text><text x="400" y="${savStartY+24+savRows.length*24+14}" font-size="10" font-weight="bold" fill="#e8716b" font-family="Arial" text-anchor="end">${fmt(savTotA)}</text>`;
   }
   const footerY=savStartY+savH+10,totalH=footerY+50;
   const footer=`<rect y="${footerY}" width="600" height="50" fill="#0f2744"/><text x="300" y="${footerY+18}" font-size="9" fill="#a0b8d0" font-family="Arial" text-anchor="middle">Waxy Financial Statement · All amounts in RWF</text><text x="300" y="${footerY+34}" font-size="9" font-weight="bold" font-style="italic" fill="#f0c050" font-family="Arial" text-anchor="middle">"${esc(saying)}"</text>`;
