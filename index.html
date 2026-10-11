@@ -261,7 +261,6 @@ td select{width:100%;border:1px solid #cbd5e1;border-radius:4px;padding:3px 4px;
 </div><!-- end wrap -->
 <div class="toast" id="toast"></div>
 
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // ─── CONSTANTS ─────────────────────────────────────────────────
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -422,6 +421,7 @@ function launchApp(me){
   currentMonthKey=null;
   switchMonth();
   refreshHistory();
+  ensureChart();
 }
 
 // ─── DATA ──────────────────────────────────────────────────────
@@ -626,7 +626,13 @@ function recalc(){
   updateChart(catMap);
   triggerAutoSync();
 }
-
+  function ensureChart(){
+  if(typeof Chart!=='undefined') return;
+  const sc=document.createElement('script');
+  sc.src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+  sc.onload=()=>{const m=_state.catMap||{}; if(Object.keys(m).length) updateChart(m);};
+  document.head.appendChild(sc);
+}
 function updateChart(catMap){
   if(typeof Chart==='undefined') return;
   const labels=Object.keys(catMap),proj=labels.map(c=>catMap[c].p),act=labels.map(c=>catMap[c].a);
